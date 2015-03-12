@@ -1,3 +1,3 @@
 # MixedBeats
 
-App to easiily create or edit playlists for your Beats Music Account
+App to easily create or edit playlists for your Beats Music Account
