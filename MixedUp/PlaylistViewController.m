@@ -32,7 +32,7 @@
   return self.playlistArray.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CELL" forIndexPath:indexPath];
 	Playlist *list = self.playlistArray[indexPath.row];
@@ -48,11 +48,7 @@
 
 	self.headerLabel.text = playlist.name;
 	
-//
-//	self.playlistArray = playlist.tracksArray;
-//	[self.tableView reloadData];
-
-	[[NetworkController sharedInstance]getMyPlaylistTracksWithID: playlist.playlistID completionHandler:^(NSError *error, NSMutableArray *playlists) {
+	[[NetworkController sharedInstance]getMyPlaylistTracksWithID:playlist.playlistID completionHandler:^(NSError *error, NSMutableArray *playlists) {
 		self.playlistArray = playlists;
 
 		[self.tableView reloadData];

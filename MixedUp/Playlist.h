@@ -19,4 +19,6 @@
 + (NSMutableArray *)parseJsonToPlaylist:(NSData *)data;
 + (NSArray *)parseJSONToTracklist:(NSData *)data;
 
+
+
 @end
