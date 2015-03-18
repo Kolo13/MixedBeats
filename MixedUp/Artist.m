@@ -11,7 +11,7 @@
 @implementation Artist
 
 
-+(NSArray *)parseAlbumsOfArtist:(NSString *)artID{
++ (NSArray *)parseAlbumsOfArtist:(NSString *)artID {
 	NSArray* albumArray = [[NSArray alloc]init];
 	
 	

@@ -13,7 +13,7 @@
 
 
 
-+(NSMutableArray *)parseJsonToPlaylist:(NSData *)data {
++ (NSMutableArray *)parseJsonToPlaylist:(NSData *)data {
 	NSMutableArray *playListArray = [[NSMutableArray alloc]init];
 	
 	NSError *error = nil;

@@ -18,15 +18,14 @@
 @property (strong, nonatomic) PlaylistViewController *playlistVC;
 @property (strong, nonatomic) ViewController *searchVC;
 @property (strong, nonatomic) UITextField *textField;
-
 @property (strong, nonatomic)  NSArray* beatSectionTitles;
 @property (strong, nonatomic) NSDictionary* beats;
 @property (strong, nonatomic)  NSString *searchTerm;
 
--(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar;
--(void)moreArtistButtonAction;
--(void)moreAlbumsButtonAction;
--(void)moreTracksButtonAction;
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar;
+- (void)moreArtistButtonAction;
+- (void)moreAlbumsButtonAction;
+- (void)moreTracksButtonAction;
 
 @end
 
@@ -34,7 +33,7 @@
 
 @implementation ViewController
 
--(void)viewDidLoad {
+- (void)viewDidLoad {
 	[super viewDidLoad];
 
 	self.tableView.delegate = self;
@@ -54,7 +53,7 @@
 
 }
 
--(void)viewDidAppear:(BOOL)animated{
+- (void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear: animated];
 	
 	self.view.backgroundColor = [UIColor grayColor];
@@ -87,7 +86,7 @@
 	  }
 }
 
--(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     
     self.searchTerm = [self.searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     [[NetworkController sharedInstance] federatedSearchTerm:self.searchTerm completionHandler:^(NSError *error, NSDictionary *beats) {
@@ -104,7 +103,7 @@
 //	return NO;
 //}
 
--(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [self.beatSectionTitles count];
 }
 
@@ -112,7 +111,7 @@
 //	
 //}
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
 	
 	UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 18)];
 	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 55, 18)];
@@ -149,7 +148,7 @@
 }
 
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
      NSString *sectionTitle = [self.beatSectionTitles objectAtIndex:section];
       NSArray *sectionObjects = [self.beats objectForKey:sectionTitle];
     return [sectionObjects count];
@@ -166,7 +165,7 @@
   return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   
     NSString *sectionTitle = [self.beatSectionTitles objectAtIndex:indexPath.section];
     NSArray *sectionObjects = [self.beats objectForKey:sectionTitle];
@@ -181,7 +180,7 @@
 
 
 
--(void)leftSwipeHandler:(UISwipeGestureRecognizer *)recognizer {
+- (void)leftSwipeHandler:(UISwipeGestureRecognizer *)recognizer {
   
   [UIView animateWithDuration:0.3 animations:^{
     [self.view addSubview:self.playlistVC.view];
@@ -198,7 +197,7 @@
   }];
 }
 
--(void)rightSwipeHandler:(UISwipeGestureRecognizer *)recognizer {
+- (void)rightSwipeHandler:(UISwipeGestureRecognizer *)recognizer {
 
   [UIView animateWithDuration:0.3 animations:^{
     self.playlistVC.view.frame = CGRectMake(self.view.frame.size.width * 1.0, 0, self.view.frame.size.width, self.view.frame.size.height);
@@ -208,7 +207,7 @@
 	
 }
 
--(void)moreArtistButtonAction{
+- (void)moreArtistButtonAction {
     
     NSLog(@"More Artist");
     [[NetworkController sharedInstance] moreSearchTerm:self.searchTerm type:@"artist" completionHandler:^(NSError *error, NSDictionary *beats) {
@@ -219,7 +218,7 @@
     }];
 }
 
--(void)moreAlbumsButtonAction{
+- (void)moreAlbumsButtonAction {
 	[[NetworkController sharedInstance] moreSearchTerm:self.searchTerm type:@"album" completionHandler:^(NSError *error, NSDictionary *beats) {
 		self.beats = beats;
 		self.beatSectionTitles = [beats allKeys];
@@ -228,7 +227,7 @@
 	}];
 }
 
--(void)moreTracksButtonAction{
+- (void)moreTracksButtonAction {
 	[[NetworkController sharedInstance] moreSearchTerm:self.searchTerm type:@"track" completionHandler:^(NSError *error, NSDictionary *beats) {
 		self.beats = beats;
 		self.beatSectionTitles = [beats allKeys];

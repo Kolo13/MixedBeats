@@ -11,7 +11,7 @@
 
 @implementation Beat
 
--(instancetype) initWithName:(NSString *)name {
+- (instancetype) initWithName:(NSString *)name {
   
   self = [super init];
   
@@ -21,7 +21,7 @@
   return self;
 }
 
-+(NSDictionary *)parseJSONIntoBeats:(NSData *)rawJSONData {
++ (NSDictionary *)parseJSONIntoBeats:(NSData *)rawJSONData {
     
     NSDictionary *beats = [[NSDictionary alloc] init];
     NSError *error = nil;
@@ -52,15 +52,13 @@
                         };
           }
       }
-      
-     
-    return beats;
+	  return beats;
   }
   return nil;
 }
 
-+(NSMutableArray *)parseJSONIntoPlaylists:(NSData *)rawJSONData{
-	
+
++ (NSMutableArray *)parseJSONIntoPlaylists:(NSData *)rawJSONData {
 	NSMutableArray *beats = [[NSMutableArray alloc] init];
 
     NSError *error = nil;

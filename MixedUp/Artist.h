@@ -15,7 +15,7 @@
 @property (strong, nonatomic) NSArray* albums;
 
 
-+(NSArray *)parseAlbumsOfArtist:(NSString *)artID;
++ (NSArray *)parseAlbumsOfArtist:(NSString *)artID;
 
 @end
 

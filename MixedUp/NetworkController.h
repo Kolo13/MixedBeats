@@ -20,6 +20,7 @@
 
 -(void)requestOAuthAccess;
 -(void)handleOAuthURL: (NSURL*) callbackURL;
+
 -(void)federatedSearchTerm:(NSString *)name completionHandler: (void(^)(NSError *error, NSDictionary *beats))completionHandler;
 -(void)moreSearchTerm:(NSString *)name type:(NSString *)type completionHandler: (void(^)(NSError *error, NSDictionary *beats))completionHandler;
 -(void)getMyPlaylists:(NSString *)userID completionHandler: (void(^)(NSError *error, NSMutableArray *playlists))completionHandler;

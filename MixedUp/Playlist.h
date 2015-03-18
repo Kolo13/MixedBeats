@@ -13,7 +13,7 @@
 @property (strong, nonatomic) NSString* name;
 @property (strong, nonatomic) NSString* ident;
 
-+(NSMutableArray *)parseJsonToPlaylist:(NSData *)data;
++ (NSMutableArray *)parseJsonToPlaylist:(NSData *)data;
 + (NSArray *)parseJSONToTracklist:(NSData *)data;
 
 @end
