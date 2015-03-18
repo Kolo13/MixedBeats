@@ -10,6 +10,15 @@
 
 @implementation Playlist
 
+- (instancetype)initWithName:(NSString *)name playlistID:(NSString *)playlistID {
+	self = [super init];
+	
+	if (self) {
+		self.name = name;
+		self.playlistID	= playlistID;
+	}
+	return self;
+};
 
 
 
@@ -25,9 +34,15 @@
 	}else{
 		
 		for (NSDictionary *item in JSONDictionary[@"data"]) {
-			Playlist *list = [Playlist new];
-			list.name = item[@"name"];
-			list.ident = item[@"id"];
+			
+			//NSMutableArray *playlistTracksArray = [[NSMutableArray alloc]init];
+
+//			for (NSDictionary *tracks in item[@"refs"][@"tracks"]) {
+//				Track *track = [[Track alloc]initWithName:tracks[@"display"] trackID:tracks[@"id"]];
+//				[playlistTracksArray addObject:track];
+//			};
+
+			Playlist *list = [[Playlist alloc]initWithName:item[@"name"] playlistID:item[@"id"]];
 			[playListArray addObject:list];
 		}
 		
@@ -36,28 +51,6 @@
 	return playListArray;
 }
 
-+ (NSArray *)parseJSONToTracklist:(NSData *)data {
-	NSMutableArray *playlistTracks = [[NSMutableArray alloc]init];
-	
-	NSError *error = nil;
-	NSDictionary *JSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-	
-	
-	if (error) {
-		NSLog(@"parse playlist failed");
-	}else{
-		
-		for (NSDictionary *item in JSONDictionary[@"data"]) {
-			Playlist *list = [Playlist new];
-			list.name = item[@"title"];
-			list.ident = item[@"id"];
-			[playlistTracks addObject:list];
-		}
-		
-	}
-	
-	return playlistTracks;
-	
-}
+
 
 @end

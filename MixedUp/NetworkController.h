@@ -12,11 +12,11 @@
 #import "Beat.h"
 
 @interface NetworkController : NSObject
+
 @property (strong, nonatomic) NSString *token;
 @property (strong, nonatomic) NSString* user_ID;
 
 
-+(NetworkController*)sharedInstance;
 
 -(void)requestOAuthAccess;
 -(void)handleOAuthURL: (NSURL*) callbackURL;
@@ -28,5 +28,6 @@
 - (void) getMyPlaylistTracksWithID:(NSString *)playlistID completionHandler: (void(^)(NSError *error, NSMutableArray *playlists))completionHandler;
 //-(void)playTrack;
 
++ (NetworkController*)sharedInstance;
 
 @end

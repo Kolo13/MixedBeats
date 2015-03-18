@@ -29,7 +29,7 @@
 
 
   if (error != nil) {
-    NSLog(@"json parsing unsuccessful. %@", error.localizedDescription);
+	  NSLog(@"json parsing unsuccessful. %@", error.localizedDescription);
   } else {
       
       id JSONData = [JSONDictionary valueForKeyPath:@"data"];
@@ -54,7 +54,7 @@
       }
 	  return beats;
   }
-  return nil;
+  return beats;
 }
 
 

@@ -71,10 +71,11 @@
 
 	}else{
 
-		self.alert = [UIAlertController alertControllerWithTitle:nil message:@"MixedBeats will present a web browser to BeatsMusic user athenication" preferredStyle:UIAlertControllerStyleAlert];
+		self.alert = [UIAlertController alertControllerWithTitle:nil message:@"MixedBeats will present a web browser to BeatsMusic user authentication" preferredStyle:UIAlertControllerStyleAlert];
 	
 		UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 		[[NetworkController sharedInstance]requestOAuthAccess];
+		
 		}];
 	
 		UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
@@ -82,7 +83,7 @@
 		
 		[self.alert addAction:okAction];
 		[self.alert addAction:cancelAction];
-		[self presentViewController:self.alert animated:YES completion:nil];
+		[self presentViewController:self.alert animated:NO completion:nil];
 	  }
 }
 
@@ -107,9 +108,6 @@
     return [self.beatSectionTitles count];
 }
 
-//-(void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender{
-//	
-//}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
 	
@@ -132,6 +130,7 @@
 		[button sizeToFit];
 		button.center = CGPointMake(tableView.frame.size.width * .9, tableView.sectionHeaderHeight	/ 2);
 		[view addSubview:button];
+		
 	}
 	
 	[label setFont:[UIFont boldSystemFontOfSize:16]];
