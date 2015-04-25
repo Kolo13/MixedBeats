@@ -14,6 +14,7 @@
 - (IBAction)myPlaylistButton:(UIButton *)sender;
 
 @property (weak, nonatomic) IBOutlet UILabel *headerLabel;
+@property (nonatomic) BOOL isPlaylistSelected;
 
 @end
 
@@ -48,12 +49,14 @@
 
 	self.headerLabel.text = playlist.name;
 	
+	
 //
 //	self.playlistArray = playlist.tracksArray;
 //	[self.tableView reloadData];
 
-	[[NetworkController sharedInstance]getMyPlaylistTracksWithID: playlist.playlistID completionHandler:^(NSError *error, NSMutableArray *playlists) {
-		self.playlistArray = playlists;
+	[[NetworkController sharedInstance]getMyPlaylistTracksWithID: playlist.playlistID completionHandler:^(NSError *error, NSMutableArray *trackList) {
+		self.playlistArray = trackList;
+		
 
 		[self.tableView reloadData];
 	}];
@@ -62,20 +65,28 @@
 
 - (IBAction)myPlaylistButton:(UIButton *)sender {
 	
-	if (sender.tag == 0) {
-		[[NetworkController sharedInstance] getMyPlaylists:([[NetworkController sharedInstance] user_ID])completionHandler:^(NSError *error, NSMutableArray *playlists) {
-			self.playlistArray = playlists;
-			[self.tableView reloadData];
-		}];
-	}else if (sender.tag == 1) {
-		[[NetworkController sharedInstance]saveCurrentPlaylist];
+	[[NetworkController sharedInstance]getMyUserID:^(NSError *error, NSString *userID) {
+				  NSLog(@"My userID is %@", userID);
 		
-		//
-		NSLog(@"Saved");
-		
-		
-		//[[NetworkController sharedInstance] saveMyPlaylist:self.playlistArray];
-	}
+		if (sender.tag == 0) {
+			[[NetworkController sharedInstance] getMyPlaylists:([[NetworkController sharedInstance] user_ID])completionHandler:^(NSError *error, NSMutableArray *playlists) {
+				
+				self.playlistArray = playlists;
+				[self.tableView reloadData];
+				self.headerLabel.text = @"My Playlists";
+
+			}];
+		}else if (sender.tag == 1) {
+			[[NetworkController sharedInstance]saveCurrentPlaylist];
+			
+			NSLog(@"Saved");
+			
+			
+			//[[NetworkController sharedInstance] saveMyPlaylist:self.playlistArray];
+		}
+			  }];
+	
+
 
 
 }
