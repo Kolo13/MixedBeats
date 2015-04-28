@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, SearchType) {
 
 - (void) getMyPlaylistTracksWithID:(NSString *)playlistID completionHandler:(void(^)(NSError *error, NSMutableArray *playlists))completionHandler;
 
-- (void)saveCurrentPlaylist;
+- (void)saveCurrentPlaylist:(NSMutableArray *)currentPlaylist;
 
 + (NetworkController*)sharedInstance;
 

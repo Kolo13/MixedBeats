@@ -40,6 +40,7 @@
 
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
+	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.searchBar.delegate = self;
 	self.textField.delegate = self;
 	
@@ -61,7 +62,7 @@
 	//self.view.backgroundColor = [UIColor grayColor];
 	self.searchVC = [self.storyboard instantiateInitialViewController];
 	self.searchVC.view.frame = CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height);
-	self.searchBar.barStyle = UISearchBarStyleProminent;
+	//self.searchBar.barStyle = UISearchBarStyleProminent;
 
 	
 	self.playlistVC = [self.storyboard instantiateViewControllerWithIdentifier:@"PLAYLIST_VC"];
@@ -177,7 +178,7 @@
 	
 		
 //	[self.playlistVC.playlistArray addObject:beat];
-//	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
@@ -211,7 +212,6 @@
 
 
 -(void)moreArtistButtonAction{
-    NSLog(@"More Artist");
 	
 	[[NetworkController sharedInstance] searchWithKeyword:self.searchTerm ofKind:Artist completionHandler:^(NSError *error, NSDictionary *beats) {
 		self.beats = beats;
@@ -221,12 +221,6 @@
 		
 	}];
 
-//    [[NetworkController sharedInstance] moreSearchTerm:self.searchTerm type:@"artist" completionHandler:^(NSError *error, NSDictionary *beats) {
-//        self.beats = beats;
-//        self.beatSectionTitles = [beats allKeys];
-//        
-//        [self.tableView reloadData];
-//    }];
 }
 
 -(void)moreAlbumsButtonAction{

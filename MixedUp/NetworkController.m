@@ -8,6 +8,7 @@
 
  
 #import "NetworkController.h"
+#import "PlaylistViewController.h"
 #import <AVFoundation/AVFoundation.h>
 
 @implementation NetworkController
@@ -61,7 +62,7 @@ NSString *code = @" ";
 			if (httpURLResponse.statusCode >= 200 && httpURLResponse.statusCode <= 299) {
 				NSLog(@"success! code: %lu", httpURLResponse.statusCode);
 				
-				NSDictionary *searchResults = [[NSDictionary alloc] init];
+				//NSDictionary *searchResults = [[NSDictionary alloc] init];
 				
 				
 				switch (ofKind) {
@@ -149,34 +150,6 @@ NSString *code = @" ";
 	[dataTask resume];
 }
 
-
-
-//- (void)moreSearchTerm:(NSString *)name type:(NSString *)type completionHandler:(void(^)(NSError *error, NSDictionary *beats))completionHandler {
-//    NSString *urlWithSearchTerm = [[NSString alloc] init];
-//    urlWithSearchTerm = [NSString stringWithFormat:@"https://partner.api.beatsmusic.com/v1/api/search?q=%@&type=%@&client_id=%@&limit=20&offset=0", name, type, client_ID];
-//    
-//    NSURL *url = [[NSURL alloc] initWithString:urlWithSearchTerm];
-//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-//    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
-//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:url];
-//    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-//		
-//		if (error) {
-//			NSLog(@"%@", error.localizedDescription);
-//		} else if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-//			NSHTTPURLResponse *httpURLResponse = (NSHTTPURLResponse *)response;
-//
-//			if (httpURLResponse.statusCode >= 200 && httpURLResponse.statusCode <= 299) {
-//				NSLog(@"success! code: %lu", httpURLResponse.statusCode);
-//				NSDictionary *beats = [Beat parseJSONIntoBeats:data];
-//				[[NSOperationQueue mainQueue] addOperationWithBlock:^{completionHandler(nil, beats);
-//				}];
-//			}
-//		}
-//    }];
-//    
-//    [dataTask resume];
-//}
 
 - (void)getMyUserID:(void(^)(NSError *error, NSString *userID))completionHandler {
     NSString *urlWithSearchTerm = [[NSString alloc] init];
@@ -276,23 +249,30 @@ NSString *code = @" ";
 }
 
 
-- (void)saveCurrentPlaylist {
+- (void)saveCurrentPlaylist:(NSMutableArray *)currentPlaylist {
 	
 	NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
 	NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
 
 	//Code to create a list of tracks in the tableview for the current playlist
-	//
-	//
-	//
-	//
+	NSString *tracks = @"tracks?";
+	
+	for (Track *track in currentPlaylist) {
+		
+		tracks = [tracks stringByAppendingFormat:@"&track_ids=%@", track.trackID];
+	}
+	
+	
 	
 	NSString *put = [NSString stringWithFormat:@"track_ids=tr51760477&access_token=%@", self.token];
 	NSData *putData = [put dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 	NSString *putLength = [NSString stringWithFormat:@"%lu", (unsigned long)[putData length]];
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
 	
-	[request setURL:[NSURL URLWithString:@"https://partner.api.beatsmusic.com/v1/api/playlists/pl287673114018447360/tracks?"]];
+	NSString *urlWithTracklist = [[NSString alloc]init];
+	urlWithTracklist = [NSString stringWithFormat:@"https://partner.api.beatsmusic.com/v1/api/playlists/pl287673114018447360/%@", tracks];
+	NSLog(@" PUT URL: %@", urlWithTracklist);
+	[request setURL:[NSURL URLWithString:urlWithTracklist]];
 	[request setHTTPMethod:@"PUT"];
 	[request setValue:putLength forHTTPHeaderField:@"Content-Length"];
 	[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];

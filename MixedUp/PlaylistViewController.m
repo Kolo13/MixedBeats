@@ -23,7 +23,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+	
+	self.isPlaylistSelected = NO;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
@@ -33,7 +34,7 @@
   return self.playlistArray.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CELL" forIndexPath:indexPath];
 	Playlist *list = self.playlistArray[indexPath.row];
@@ -44,47 +45,62 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-	Playlist *playlist = [self.playlistArray objectAtIndex:indexPath.row];
-
-	self.headerLabel.text = playlist.name;
 	
-	
-//
-//	self.playlistArray = playlist.tracksArray;
-//	[self.tableView reloadData];
+	if (self.isPlaylistSelected) {
+		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-	[[NetworkController sharedInstance]getMyPlaylistTracksWithID: playlist.playlistID completionHandler:^(NSError *error, NSMutableArray *trackList) {
-		self.playlistArray = trackList;
+	} else {
+		self.isPlaylistSelected = YES;
+		Playlist *playlist = [self.playlistArray objectAtIndex:indexPath.row];
+		
+		self.headerLabel.text = playlist.name;
+		
+		
+		//
+		//	self.playlistArray = playlist.tracksArray;
+		//	[self.tableView reloadData];
+		
+		[[NetworkController sharedInstance]getMyPlaylistTracksWithID: playlist.playlistID completionHandler:^(NSError *error, NSMutableArray *trackList) {
+			self.playlistArray = trackList;
+			
+			[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+			[self.tableView reloadData];
+		}];
 		
 
-		[self.tableView reloadData];
-	}];
-	
+		
+	}
 }
 
 - (IBAction)myPlaylistButton:(UIButton *)sender {
 	
-	[[NetworkController sharedInstance]getMyUserID:^(NSError *error, NSString *userID) {
-				  NSLog(@"My userID is %@", userID);
+	
 		
 		if (sender.tag == 0) {
-			[[NetworkController sharedInstance] getMyPlaylists:([[NetworkController sharedInstance] user_ID])completionHandler:^(NSError *error, NSMutableArray *playlists) {
+			self.isPlaylistSelected = NO;
+			[[NetworkController sharedInstance]getMyUserID:^(NSError *error, NSString *userID) {
+				NSLog(@"My userID is %@", userID);
+			
 				
-				self.playlistArray = playlists;
-				[self.tableView reloadData];
-				self.headerLabel.text = @"My Playlists";
+				[[NetworkController sharedInstance] getMyPlaylists:([[NetworkController sharedInstance] user_ID])completionHandler:^(NSError *error, NSMutableArray *playlists) {
+					
+					self.playlistArray = playlists;
+					[self.tableView reloadData];
+					self.headerLabel.text = @"My Playlists";
+					}];
 
 			}];
-		}else if (sender.tag == 1) {
-			[[NetworkController sharedInstance]saveCurrentPlaylist];
+		}else if ((self.isPlaylistSelected) && (sender.tag == 1)) {
+			[[NetworkController sharedInstance]saveCurrentPlaylist:self.playlistArray];
 			
+
 			NSLog(@"Saved");
 			
 			
 			//[[NetworkController sharedInstance] saveMyPlaylist:self.playlistArray];
 		}
-			  }];
+		
 	
 
 
