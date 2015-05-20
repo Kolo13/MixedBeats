@@ -18,16 +18,15 @@
 @property (strong, nonatomic) PlaylistViewController *playlistVC;
 //@property (strong, nonatomic) ViewController *searchVC;
 @property (strong, nonatomic) UITextField *textField;
-
 @property (strong, nonatomic)  NSArray* beatSectionTitles;
 @property (strong, nonatomic) NSDictionary* beats;
 @property (strong, nonatomic)  NSString *searchTerm;
 @property SearchType ofKind;
 
--(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar;
--(void)moreArtistButtonAction;
--(void)moreAlbumsButtonAction;
--(void)moreTracksButtonAction;
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar;
+- (void)moreArtistButtonAction;
+- (void)moreAlbumsButtonAction;
+- (void)moreTracksButtonAction;
 
 @end
 
@@ -35,7 +34,7 @@
 
 @implementation ViewController
 
--(void)viewDidLoad {
+- (void)viewDidLoad {
 	[super viewDidLoad];
 
 	
@@ -74,7 +73,7 @@
 
 }
 
--(void)viewDidAppear:(BOOL)animated{
+- (void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear: animated];
 	
 	self.playlistVC = [self.storyboard instantiateViewControllerWithIdentifier:@"PLAYLIST_VC"];
@@ -123,7 +122,7 @@
 }
 
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
 	
 	UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 18)];
 	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 55, 18)];
@@ -162,7 +161,7 @@
 }
 
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
      NSString *sectionTitle = [self.beatSectionTitles objectAtIndex:section];
       NSArray *sectionObjects = [self.beats objectForKey:sectionTitle];
     return [sectionObjects count];
@@ -179,7 +178,7 @@
   return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   
     NSString *sectionTitle = [self.beatSectionTitles objectAtIndex:indexPath.section];
     NSArray *sectionObjects = [self.beats objectForKey:sectionTitle];
@@ -194,7 +193,7 @@
 
 
 
--(void)leftSwipeHandler:(UISwipeGestureRecognizer *)recognizer {
+- (void)leftSwipeHandler:(UISwipeGestureRecognizer *)recognizer {
   
   [UIView animateWithDuration:0.3 animations:^{
     [self.view addSubview:self.playlistVC.view];
@@ -209,7 +208,7 @@
   }];
 }
 
--(void)rightSwipeHandler:(UISwipeGestureRecognizer *)recognizer {
+- (void)rightSwipeHandler:(UISwipeGestureRecognizer *)recognizer {
 
   [UIView animateWithDuration:0.3 animations:^{
     self.playlistVC.view.frame = CGRectMake(self.view.frame.size.width * 1.0, 0, self.view.frame.size.width, self.view.frame.size.height);
