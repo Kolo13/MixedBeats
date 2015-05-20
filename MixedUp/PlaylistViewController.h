@@ -12,8 +12,10 @@
 #import "Beat.h"
 
 @interface PlaylistViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
-@property (strong, nonatomic) NSMutableArray *playlistArray;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+
+@property (strong, nonatomic) NSMutableArray *playlistArray;
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end

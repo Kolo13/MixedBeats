@@ -16,11 +16,12 @@
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (strong, nonatomic) UIAlertController *alert;
 @property (strong, nonatomic) PlaylistViewController *playlistVC;
-@property (strong, nonatomic) ViewController *searchVC;
+//@property (strong, nonatomic) ViewController *searchVC;
 @property (strong, nonatomic) UITextField *textField;
 @property (strong, nonatomic)  NSArray* beatSectionTitles;
 @property (strong, nonatomic) NSDictionary* beats;
 @property (strong, nonatomic)  NSString *searchTerm;
+@property SearchType ofKind;
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar;
 - (void)moreArtistButtonAction;
@@ -36,9 +37,28 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 
+	
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
+	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+	self.view.backgroundColor= [UIColor blackColor];
+	self.tableView.backgroundColor = [UIColor whiteColor];
+	
+	// Display a message when the table is empty
+	UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+	
+	messageLabel.text = @"Search for artist, albums, or tracks.  Swipe tracks to the right to add them to currently selected playlist.  Swipe left to create or select a different playlist";
+	messageLabel.textColor = [UIColor blackColor];
+	messageLabel.numberOfLines = 0;
+	messageLabel.textAlignment = NSTextAlignmentCenter;
+	messageLabel.font = [UIFont fontWithName:@"Palatino-Italic" size:20];
+	[messageLabel sizeToFit];
+	
+	self.tableView.backgroundView = messageLabel;
+	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+	
 	self.searchBar.delegate = self;
+	
 	self.textField.delegate = self;
 	
 	UISwipeGestureRecognizer *leftGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftSwipeHandler:)];
@@ -56,13 +76,10 @@
 - (void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear: animated];
 	
-	self.view.backgroundColor = [UIColor grayColor];
-	self.searchVC = [self.storyboard instantiateInitialViewController];
 	self.playlistVC = [self.storyboard instantiateViewControllerWithIdentifier:@"PLAYLIST_VC"];
 	self.playlistVC.playlistArray = [[NSMutableArray alloc]init];
 	self.playlistVC.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width,self.view.frame.size.height);
-	self.searchVC.view.frame = CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height);
-	self.searchBar.barStyle = UISearchBarStyleProminent;
+	
 	
 	if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"authToken"] isKindOfClass:[NSString class]]){
 		self.token = [[NSUserDefaults standardUserDefaults] valueForKey:@"authToken"];
@@ -71,7 +88,7 @@
 
 	}else{
 
-		self.alert = [UIAlertController alertControllerWithTitle:nil message:@"MixedBeats will present a web browser to BeatsMusic user authentication" preferredStyle:UIAlertControllerStyleAlert];
+		self.alert = [UIAlertController alertControllerWithTitle:nil message:@"MixedBeats will present a web browser to  sign into BeatsMusic" preferredStyle:UIAlertControllerStyleAlert];
 	
 		UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 		[[NetworkController sharedInstance]requestOAuthAccess];
@@ -83,26 +100,22 @@
 		
 		[self.alert addAction:okAction];
 		[self.alert addAction:cancelAction];
-		[self presentViewController:self.alert animated:NO completion:nil];
-	  }
+		[self presentViewController:self.alert animated:YES completion:nil];
+	}
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     
     self.searchTerm = [self.searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-    [[NetworkController sharedInstance] federatedSearchTerm:self.searchTerm completionHandler:^(NSError *error, NSDictionary *beats) {
-        self.beats = beats;
-        self.beatSectionTitles = [beats allKeys];
-        [self.tableView reloadData];
+	
+	[[NetworkController sharedInstance] searchWithKeyword:self.searchTerm ofKind:Federated completionHandler:^(NSError *error, NSDictionary *beats) {
+		self.beats = beats;
+		self.beatSectionTitles = [beats allKeys];
+		[self.tableView reloadData];
 	}];
-}
 
-//- (BOOL) textFieldShouldReturn:(UITextField *)textField {
-//	
-//	[textField resignFirstResponder];
-//	
-//	return NO;
-//}
+	}
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [self.beatSectionTitles count];
@@ -116,9 +129,10 @@
 	UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
 	NSString *string = [self.beatSectionTitles objectAtIndex:section];
 	
-	[button setTag:section];
-    
-	if (button.tag == 0) {[button addTarget:self action:@selector(moreArtistButtonAction) forControlEvents:UIControlEventTouchUpInside];
+	[button setTag: section];
+
+	if (button.tag == 0) {
+		[button addTarget:self action:@selector(moreArtistButtonAction) forControlEvents:UIControlEventTouchUpInside];
 	} else if (button.tag == 1) {
 		[button addTarget:self action:@selector(moreAlbumsButtonAction) forControlEvents:UIControlEventTouchUpInside];
 	} else {
@@ -126,7 +140,7 @@
 	}
 
 	if (self.beatSectionTitles.count > 1) {
-		[button setTitle:@"more>" forState:UIControlStateNormal];
+		[button setTitle:@"show all>" forState:UIControlStateNormal];
 		[button sizeToFit];
 		button.center = CGPointMake(tableView.frame.size.width * .9, tableView.sectionHeaderHeight	/ 2);
 		[view addSubview:button];
@@ -174,7 +188,7 @@
 	
 		
 //	[self.playlistVC.playlistArray addObject:beat];
-//	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
@@ -188,9 +202,7 @@
     self.playlistVC.view.frame = CGRectMake(self.view.frame.size.width * 0, 0, self.view.frame.size.width, self.view.frame.size.height);
       
   } completion:^(BOOL finished) {
-	  [[NetworkController sharedInstance]getMyUserID:^(NSError *error, NSString *userID) {
-		  NSLog(@"%@", userID);
-	  }];
+
     [self.playlistVC.tableView reloadData];
     
   }];

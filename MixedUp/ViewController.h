@@ -13,6 +13,10 @@
 @interface ViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSURLSessionDelegate, UISearchBarDelegate, UIWebViewDelegate, UITextFieldDelegate>
 
 
+-(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar;
+
+
+
 
 @end
 
