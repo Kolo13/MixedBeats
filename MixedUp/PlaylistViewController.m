@@ -27,6 +27,17 @@
 	self.isPlaylistSelected = NO;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+	
+	UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+	messageLabel.text = @"Pull down to load playlist";
+	messageLabel.textColor = [UIColor blackColor];
+	messageLabel.numberOfLines = 0;
+	messageLabel.textAlignment = NSTextAlignmentCenter;
+	messageLabel.font = [UIFont fontWithName:@"Palatino-Italic" size:20];
+	[messageLabel sizeToFit];
+
+	
+	
     
 }
 
@@ -79,26 +90,46 @@
 		
 		if (sender.tag == 0) {
 			self.isPlaylistSelected = NO;
-			[[NetworkController sharedInstance]getMyUserID:^(NSError *error, NSString *userID) {
-				NSLog(@"My userID is %@", userID);
 			
+			if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"userID"] isKindOfClass:[NSString class]])	 {
 				
-				[[NetworkController sharedInstance] getMyPlaylists:([[NetworkController sharedInstance] user_ID])completionHandler:^(NSError *error, NSMutableArray *playlists) {
-					
-					self.playlistArray = playlists;
-					[self.tableView reloadData];
-					self.headerLabel.text = @"My Playlists";
-					}];
+				NSLog(@"userID is present");
+				
+				NSString *user_ID = [[NSUserDefaults standardUserDefaults] valueForKey:@"userID"];
+				NSLog(@"%@", user_ID);
 
+				[[NetworkController sharedInstance] getMyPlaylists:user_ID completionHandler:^(NSError *error, NSMutableArray *playlists) {
+			
+				NSLog(@"PLaylist");
+
+				self.playlistArray = playlists;
+				[self.tableView reloadData];
+				self.headerLabel.text = @"My Playlists";
 			}];
+			} else {
+				[[NetworkController sharedInstance]getMyUserID:^(NSError *error, NSString *userID) {
+					NSLog(@"My userID is %@", userID);
+					
+										
+					[[NetworkController sharedInstance] getMyPlaylists:(userID)completionHandler:^(NSError *error, NSMutableArray *playlists) {
+						
+						self.playlistArray = playlists;
+						[self.tableView reloadData];
+						self.headerLabel.text = @"My Playlists";
+					}];
+					
+					
+				}];
+				
+
+			}
+			
 		}else if ((self.isPlaylistSelected) && (sender.tag == 1)) {
 			[[NetworkController sharedInstance]saveCurrentPlaylist:self.playlistArray];
-			
 
 			NSLog(@"Saved");
 			
 			
-			//[[NetworkController sharedInstance] saveMyPlaylist:self.playlistArray];
 		}
 		
 	

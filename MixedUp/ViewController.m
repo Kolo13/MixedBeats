@@ -16,7 +16,7 @@
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (strong, nonatomic) UIAlertController *alert;
 @property (strong, nonatomic) PlaylistViewController *playlistVC;
-@property (strong, nonatomic) ViewController *searchVC;
+//@property (strong, nonatomic) ViewController *searchVC;
 @property (strong, nonatomic) UITextField *textField;
 
 @property (strong, nonatomic)  NSArray* beatSectionTitles;
@@ -38,10 +38,28 @@
 -(void)viewDidLoad {
 	[super viewDidLoad];
 
+	
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+	self.view.backgroundColor= [UIColor blackColor];
+	self.tableView.backgroundColor = [UIColor whiteColor];
+	
+	// Display a message when the table is empty
+	UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+	
+	messageLabel.text = @"Search for artist, albums, or tracks.  Swipe tracks to the right to add them to currently selected playlist.  Swipe left to create or select a different playlist";
+	messageLabel.textColor = [UIColor blackColor];
+	messageLabel.numberOfLines = 0;
+	messageLabel.textAlignment = NSTextAlignmentCenter;
+	messageLabel.font = [UIFont fontWithName:@"Palatino-Italic" size:20];
+	[messageLabel sizeToFit];
+	
+	self.tableView.backgroundView = messageLabel;
+	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+	
 	self.searchBar.delegate = self;
+	
 	self.textField.delegate = self;
 	
 	UISwipeGestureRecognizer *leftGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftSwipeHandler:)];
@@ -59,16 +77,9 @@
 -(void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear: animated];
 	
-	//self.view.backgroundColor = [UIColor grayColor];
-	self.searchVC = [self.storyboard instantiateInitialViewController];
-	self.searchVC.view.frame = CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height);
-	//self.searchBar.barStyle = UISearchBarStyleProminent;
-
-	
 	self.playlistVC = [self.storyboard instantiateViewControllerWithIdentifier:@"PLAYLIST_VC"];
 	self.playlistVC.playlistArray = [[NSMutableArray alloc]init];
 	self.playlistVC.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width,self.view.frame.size.height);
-	
 	
 	
 	if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"authToken"] isKindOfClass:[NSString class]]){
@@ -192,9 +203,7 @@
     self.playlistVC.view.frame = CGRectMake(self.view.frame.size.width * 0, 0, self.view.frame.size.width, self.view.frame.size.height);
       
   } completion:^(BOOL finished) {
-//	  [[NetworkController sharedInstance]getMyUserID:^(NSError *error, NSString *userID) {
-//		  NSLog(@"%@", userID);
-//	  }];
+
     [self.playlistVC.tableView reloadData];
     
   }];

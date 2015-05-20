@@ -174,7 +174,14 @@ NSString *code = @" ";
             NSArray* comp1Array = [components componentsSeparatedByString:@"user_context\":\""];
             NSString* comp1 = [comp1Array lastObject];
             NSArray* comp2Array = [comp1 componentsSeparatedByString:@"\",\"extended"];
-            self.user_ID = [comp2Array firstObject];
+			self.user_ID = [comp2Array firstObject];
+
+			
+			NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+			[defaults setValue:(self.user_ID) forKey:@"userID"];
+			[defaults synchronize];
+
+			
           [[NSOperationQueue mainQueue] addOperationWithBlock:^{completionHandler(nil, self.user_ID);
           }];
 
@@ -188,7 +195,7 @@ NSString *code = @" ";
 
 - (void)getMyPlaylists:(NSString *)userID completionHandler:(void(^)(NSError *error, NSMutableArray *playlists))completionHandler {
 	NSString *urlWithSearchTerm = [[NSString alloc] init];
-	urlWithSearchTerm = [NSString stringWithFormat:@"https://partner.api.beatsmusic.com/v1/api/users/%@/playlists?access_token=%@&limit=20&offset=0", self.user_ID, self.token];
+	urlWithSearchTerm = [NSString stringWithFormat:@"https://partner.api.beatsmusic.com/v1/api/users/%@/playlists?access_token=%@&limit=20&offset=0", userID, self.token];
 
 	NSURL *url = [[NSURL alloc]initWithString:urlWithSearchTerm];
 	NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -264,7 +271,7 @@ NSString *code = @" ";
 	
 	
 	
-	NSString *put = [NSString stringWithFormat:@"track_ids=tr51760477&access_token=%@", self.token];
+	NSString *put = [NSString stringWithFormat:@"&access_token=%@", self.token];
 	NSData *putData = [put dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 	NSString *putLength = [NSString stringWithFormat:@"%lu", (unsigned long)[putData length]];
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
