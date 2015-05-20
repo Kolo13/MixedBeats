@@ -57,8 +57,24 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
-	[[NetworkController sharedInstance]getMyPlaylistTracksWithID:playlist.playlistID completionHandler:^(NSError *error, NSMutableArray *playlists) {
-		self.playlistArray = playlists;
+	if (self.isPlaylistSelected) {
+		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+	} else {
+		self.isPlaylistSelected = YES;
+		Playlist *playlist = [self.playlistArray objectAtIndex:indexPath.row];
+		
+		self.headerLabel.text = playlist.name;
+		
+		
+		//
+		//	self.playlistArray = playlist.tracksArray;
+		//	[self.tableView reloadData];
+		
+		[[NetworkController sharedInstance]getMyPlaylistTracksWithID: playlist.playlistID completionHandler:^(NSError *error, NSMutableArray *trackList) {
+			self.playlistArray = trackList;
+			
+			[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
 			[self.tableView reloadData];
 		}];

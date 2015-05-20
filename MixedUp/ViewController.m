@@ -104,8 +104,8 @@
 	}
 }
 
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    
+-(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+
     self.searchTerm = [self.searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 	
 	[[NetworkController sharedInstance] searchWithKeyword:self.searchTerm ofKind:Federated completionHandler:^(NSError *error, NSDictionary *beats) {
@@ -117,7 +117,7 @@
 	}
 
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+-(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView{
     return [self.beatSectionTitles count];
 }
 
@@ -218,30 +218,36 @@
 	
 }
 
-- (void)moreArtistButtonAction {
-    
-    NSLog(@"More Artist");
-    [[NetworkController sharedInstance] moreSearchTerm:self.searchTerm type:@"artist" completionHandler:^(NSError *error, NSDictionary *beats) {
-        self.beats = beats;
-        self.beatSectionTitles = [beats allKeys];
-        
-        [self.tableView reloadData];
-    }];
+
+-(void)moreArtistButtonAction{
+	
+	[[NetworkController sharedInstance] searchWithKeyword:self.searchTerm ofKind:Artist completionHandler:^(NSError *error, NSDictionary *beats) {
+		self.beats = beats;
+		self.beatSectionTitles = [beats allKeys];
+		
+		[self.tableView reloadData];
+		
+	}];
+
 }
 
 - (void)moreAlbumsButtonAction {
-	[[NetworkController sharedInstance] moreSearchTerm:self.searchTerm type:@"album" completionHandler:^(NSError *error, NSDictionary *beats) {
-		self.beats = beats;
-		self.beatSectionTitles = [beats allKeys];
+	[[NetworkController sharedInstance] searchWithKeyword:self.searchTerm ofKind:Album completionHandler:^(NSError *error, NSDictionary *beats) {
+		
+//-(void)moreAlbumsButtonAction{
+//	[[NetworkController sharedInstance] searchWithKeyword:self.searchTerm ofKind:Album completionHandler:^(NSError *error, NSDictionary *beats) {
+	
 		
 		[self.tableView reloadData];
 	}];
 }
 
-- (void)moreTracksButtonAction {
-	[[NetworkController sharedInstance] moreSearchTerm:self.searchTerm type:@"track" completionHandler:^(NSError *error, NSDictionary *beats) {
-		self.beats = beats;
-		self.beatSectionTitles = [beats allKeys];
+//- (void)moreTracksButtonAction {
+//	[[NetworkController sharedInstance] moreSearchTerm:self.searchTerm type:@"track" completionHandler:^(NSError *error, NSDictionary *beats) {
+//		self.beats = beats;
+
+-(void)moreTracksButtonAction{
+	[[NetworkController sharedInstance] searchWithKeyword:self.searchTerm ofKind:Tracks completionHandler:^(NSError *error, NSDictionary *beats) {
 		
 		[self.tableView reloadData];
 	}];
